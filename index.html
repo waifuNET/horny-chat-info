@@ -2,56 +2,186 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
-  <title>Информация</title>
+  <title>Horny Chat — Информация</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
+
   <style>
+    :root {
+      --bg: #0e1621;
+      --card: #17212b;
+      --text: #ffffff;
+      --muted: #8b98a5;
+      --accent: #2ea6ff;
+      --danger: #ff5c5c;
+      --radius: 14px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
     body {
       margin: 0;
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial;
-      background: #0f0f0f;
-      color: #fff;
+      background: var(--bg);
+      color: var(--text);
     }
+
     .container {
-      max-width: 800px;
-      margin: auto;
+      max-width: 820px;
+      margin: 0 auto;
       padding: 20px;
     }
-    h1 {
-      font-size: 26px;
-      margin-bottom: 10px;
+
+    .header {
+      text-align: center;
+      margin-bottom: 24px;
     }
+
+    .header h1 {
+      font-size: 30px;
+      margin: 0;
+    }
+
+    .header p {
+      color: var(--muted);
+      margin-top: 6px;
+    }
+
     .card {
-      background: #1c1c1c;
-      border-radius: 12px;
-      padding: 16px;
-      margin-bottom: 16px;
+      background: var(--card);
+      border-radius: var(--radius);
+      padding: 18px;
+      margin-bottom: 18px;
     }
-    a {
-      color: #4ea1ff;
+
+    .card h2 {
+      margin: 0 0 14px;
+      font-size: 20px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .time-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      gap: 10px;
+    }
+
+    .time-item {
+      background: rgba(255,255,255,0.04);
+      padding: 10px 12px;
+      border-radius: 10px;
+      font-size: 14px;
+    }
+
+    .rules {
+      counter-reset: rule;
+    }
+
+    .rule {
+      margin-bottom: 12px;
+      padding-left: 28px;
+      position: relative;
+      color: #e6e6e6;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .rule::before {
+      counter-increment: rule;
+      content: counter(rule);
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 20px;
+      height: 20px;
+      background: var(--danger);
+      color: #fff;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: bold;
+    }
+
+    .links a {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: rgba(255,255,255,0.05);
+      padding: 12px 14px;
+      border-radius: 12px;
       text-decoration: none;
+      color: var(--text);
+      margin-bottom: 10px;
+      transition: background 0.2s;
+    }
+
+    .links a:hover {
+      background: rgba(255,255,255,0.1);
+    }
+
+    .footer {
+      text-align: center;
+      color: var(--muted);
+      font-size: 12px;
+      margin-top: 20px;
     }
   </style>
 </head>
 <body>
+
   <div class="container">
-    <h1>ℹ️ Информация</h1>
 
-    <div class="card">
-      <h3>О группе</h3>
-      <p>Здесь описание вашей группы в Telegram.</p>
+    <div class="header">
+      <h1>🔥 Horny Chat</h1>
+      <p>Официальная информационная страница группы</p>
     </div>
 
     <div class="card">
-      <h3>Правила</h3>
-      <p>1. Без спама<br>2. Уважение<br>3. Без флуда</p>
+      <h2>⏰ Время (МСК)</h2>
+      <div class="time-list">
+        <div class="time-item">Абобик</div>
+        <div class="time-item">Капучино</div>
+        <div class="time-item">Берсерк</div>
+        <div class="time-item">Карина</div>
+        <div class="time-item">Деус</div>
+        <div class="time-item">Жок −2</div>
+        <div class="time-item">Колбаска +1</div>
+        <div class="time-item">Артём +2</div>
+        <div class="time-item">Мика +2</div>
+      </div>
     </div>
 
     <div class="card">
-      <h3>Контакты</h3>
-      <p>
-        Админ: <a href="https://t.me/username">@username</a>
-      </p>
+      <h2>📜 Правила</h2>
+      <div class="rules">
+        <div class="rule">Травля, угнетение любого участника группы, упоминание родных в негативном ключе.</div>
+        <div class="rule">Упоминание расовых, политических, религиозных тем в негативном ключе.</div>
+        <div class="rule">В связи с текущей политической ситуацией любые высказывания в любую сторону полностью запрещены.</div>
+        <div class="rule">Фейк-аккаунты запрещены, если оригиналу это не нравится.</div>
+        <div class="rule">Неадекватное поведение (треш-стикеры, эпилепсия, контент, неприятный по мнению главного админа).</div>
+        <div class="rule">Использование команд бота, нарушающих правила.</div>
+        <div class="rule">Администрация вправе блокировать проблемных пользователей даже без явного нарушения.</div>
+      </div>
     </div>
+
+    <div class="card">
+      <h2>🔗 Ссылки</h2>
+      <div class="links">
+        <a href="https://t.me/+H81RkMm4flU2NjNi" target="_blank">📱 Telegram — Horny Chat</a>
+        <a href="https://discord.gg/aMCeRd5Dd" target="_blank">🎧 Discord</a>
+      </div>
+    </div>
+
+    <div class="footer">
+      © Horny Chat • Страница открывается прямо в Telegram
+    </div>
+
   </div>
+
 </body>
 </html>
