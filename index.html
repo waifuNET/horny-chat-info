@@ -16,6 +16,10 @@
       --radius: 14px;
     }
 
+    * {
+      box-sizing: border-box;
+    }
+
     body {
       margin: 0;
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial;
@@ -24,7 +28,7 @@
     }
 
     .container {
-      max-width: 900px;
+      max-width: 920px;
       margin: auto;
       padding: 20px;
     }
@@ -59,11 +63,6 @@
       gap: 8px;
     }
 
-    .time-table {
-      display: grid;
-      gap: 12px;
-    }
-
     .time-row {
       display: grid;
       grid-template-columns: 1.4fr 1fr 1fr;
@@ -71,6 +70,7 @@
       background: rgba(255,255,255,0.04);
       padding: 12px;
       border-radius: 12px;
+      margin-bottom: 10px;
       font-size: 14px;
     }
 
@@ -85,6 +85,13 @@
     .time-value {
       text-align: right;
       font-family: monospace;
+    }
+
+    .birthday {
+      grid-column: 1 / -1;
+      font-size: 13px;
+      color: var(--muted);
+      margin-top: 6px;
     }
 
     .rules {
@@ -148,69 +155,12 @@
 
   <div class="header">
     <h1>🔥 Horny Chat</h1>
-    <span>Время указано относительно МСК</span>
+    <span>Время считается от МСК (UTC+3)</span>
   </div>
 
   <div class="card">
-    <h2>⏰ Часовые пояса участников</h2>
-
-    <div class="time-table">
-
-      <div class="time-row">
-        <div class="time-name">Абобик</div>
-        <div class="time-shift">МСК ±0</div>
-        <div class="time-value" data-offset="0"></div>
-      </div>
-
-      <div class="time-row">
-        <div class="time-name">Капучино</div>
-        <div class="time-shift">МСК ±0</div>
-        <div class="time-value" data-offset="0"></div>
-      </div>
-
-      <div class="time-row">
-        <div class="time-name">Берсерк</div>
-        <div class="time-shift">МСК ±0</div>
-        <div class="time-value" data-offset="0"></div>
-      </div>
-
-      <div class="time-row">
-        <div class="time-name">Карина</div>
-        <div class="time-shift">МСК ±0</div>
-        <div class="time-value" data-offset="0"></div>
-      </div>
-
-      <div class="time-row">
-        <div class="time-name">Деус</div>
-        <div class="time-shift">МСК ±0</div>
-        <div class="time-value" data-offset="0"></div>
-      </div>
-
-      <div class="time-row">
-        <div class="time-name">Жок</div>
-        <div class="time-shift">МСК −2</div>
-        <div class="time-value" data-offset="-2"></div>
-      </div>
-
-      <div class="time-row">
-        <div class="time-name">Колбаска</div>
-        <div class="time-shift">МСК +1</div>
-        <div class="time-value" data-offset="1"></div>
-      </div>
-
-      <div class="time-row">
-        <div class="time-name">Артём</div>
-        <div class="time-shift">МСК +2</div>
-        <div class="time-value" data-offset="2"></div>
-      </div>
-
-      <div class="time-row">
-        <div class="time-name">Мика</div>
-        <div class="time-shift">МСК +2</div>
-        <div class="time-value" data-offset="2"></div>
-      </div>
-
-    </div>
+    <h2>👥 Участники</h2>
+    <div id="users"></div>
   </div>
 
   <div class="card">
@@ -235,36 +185,94 @@
   </div>
 
   <div class="footer">
-    © Horny Chat • Обновляется автоматически
+    © Horny Chat • Открывается внутри Telegram
   </div>
 
 </div>
 
 <script>
-  function updateTimes() {
+  const users = [
+    { name: "Абобик", offset: 0 },
+    { name: "Капучино", offset: 0 },
+    { name: "Берсерк", offset: 0 },
+    { name: "Карина", offset: 0 },
+    { name: "Деус", offset: 0 },
+
+    { name: "Жок", offset: -2 },
+    { name: "Колбаска", offset: 1 },
+
+    { name: "Артём", offset: 2, birthday: "2003-04-15" },
+    { name: "Мика", offset: 2, birthday: "2004-09-02" }
+  ];
+
+  function getMSKTime() {
     const now = new Date();
-
-    // UTC время
     const utc = now.getTime() + now.getTimezoneOffset() * 60000;
+    return new Date(utc + 3 * 3600000);
+  }
 
-    // МСК = UTC +3
-    const msk = new Date(utc + 3 * 60 * 60 * 1000);
+  function getAge(birthday) {
+    const today = new Date();
+    const birth = new Date(birthday);
+    let age = today.getFullYear() - birth.getFullYear();
+    if (
+      today.getMonth() < birth.getMonth() ||
+      (today.getMonth() === birth.getMonth() && today.getDate() < birth.getDate())
+    ) {
+      age--;
+    }
+    return age;
+  }
 
-    document.querySelectorAll('.time-value').forEach(el => {
-      const offset = parseInt(el.dataset.offset, 10);
+  function getNextBirthday(birthday) {
+    const today = new Date();
+    const birth = new Date(birthday);
+    const next = new Date(today.getFullYear(), birth.getMonth(), birth.getDate());
+    if (next < today) next.setFullYear(today.getFullYear() + 1);
+    return next.toLocaleDateString("ru-RU", { day: "2-digit", month: "long" });
+  }
 
-      // Локальное время участника
-      const localTime = new Date(msk.getTime() + offset * 60 * 60 * 1000);
+  function renderUsers() {
+    const container = document.getElementById("users");
+    container.innerHTML = "";
 
-      el.textContent = localTime.toLocaleTimeString('ru-RU', {
-        hour: '2-digit',
-        minute: '2-digit'
+    const msk = getMSKTime();
+
+    users.forEach(user => {
+      const local = new Date(msk.getTime() + user.offset * 3600000);
+      const time = local.toLocaleTimeString("ru-RU", {
+        hour: "2-digit",
+        minute: "2-digit"
       });
+
+      const row = document.createElement("div");
+      row.className = "time-row";
+
+      row.innerHTML = `
+        <div class="time-name">${user.name}</div>
+        <div class="time-shift">МСК ${user.offset >= 0 ? "+" : ""}${user.offset}</div>
+        <div class="time-value">${time}</div>
+      `;
+
+      if (user.birthday) {
+        const b = document.createElement("div");
+        b.className = "birthday";
+        b.textContent =
+          "🎂 " +
+          new Date(user.birthday).toLocaleDateString("ru-RU") +
+          " • " +
+          getAge(user.birthday) +
+          " лет • следующий ДР: " +
+          getNextBirthday(user.birthday);
+        row.appendChild(b);
+      }
+
+      container.appendChild(row);
     });
   }
 
-  updateTimes();
-  setInterval(updateTimes, 60000);
+  renderUsers();
+  setInterval(renderUsers, 60000);
 </script>
 
 </body>
