@@ -13,12 +13,11 @@
       --muted: #8b98a5;
       --accent: #2ea6ff;
       --danger: #ff5c5c;
+      --success: #00c853;
       --radius: 14px;
     }
 
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
 
     body {
       margin: 0;
@@ -27,26 +26,11 @@
       color: var(--text);
     }
 
-    .container {
-      max-width: 920px;
-      margin: auto;
-      padding: 20px;
-    }
+    .container { max-width: 920px; margin: auto; padding: 20px; }
 
-    .header {
-      text-align: center;
-      margin-bottom: 26px;
-    }
-
-    .header h1 {
-      margin: 0;
-      font-size: 32px;
-    }
-
-    .header span {
-      color: var(--muted);
-      font-size: 14px;
-    }
+    .header { text-align: center; margin-bottom: 26px; }
+    .header h1 { margin: 0; font-size: 32px; }
+    .header span { color: var(--muted); font-size: 14px; }
 
     .card {
       background: var(--card);
@@ -63,6 +47,7 @@
       gap: 8px;
     }
 
+    /* Стили для пользователей */
     .time-row {
       display: grid;
       grid-template-columns: 1.4fr 1fr 1fr;
@@ -70,34 +55,28 @@
       background: rgba(255,255,255,0.04);
       padding: 12px;
       border-radius: 12px;
-      margin-bottom: 10px;
+      margin-bottom: 8px;
       font-size: 14px;
     }
 
-    .time-name {
-      font-weight: 600;
-    }
+    .time-name { font-weight: 600; }
+    .time-shift { color: var(--muted); }
+    .time-value { text-align: right; font-family: monospace; }
 
-    .time-shift {
-      color: var(--muted);
+    /* Стили для ДР */
+    .bday-item {
+      padding: 12px;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
+    .bday-item:last-child { border-bottom: none; }
+    .bday-info { font-size: 14px; }
+    .bday-date { font-size: 12px; color: var(--muted); display: block; margin-top: 2px; }
+    .bday-countdown { font-size: 13px; color: var(--accent); font-weight: 500; }
 
-    .time-value {
-      text-align: right;
-      font-family: monospace;
-    }
-
-    .birthday {
-      grid-column: 1 / -1;
-      font-size: 13px;
-      color: var(--muted);
-      margin-top: 6px;
-    }
-
-    .rules {
-      counter-reset: rule;
-    }
-
+    .rules { counter-reset: rule; }
     .rule {
       margin-bottom: 12px;
       padding-left: 30px;
@@ -105,48 +84,24 @@
       font-size: 14px;
       line-height: 1.5;
     }
-
     .rule::before {
       counter-increment: rule;
       content: counter(rule);
-      position: absolute;
-      left: 0;
-      top: 2px;
-      width: 20px;
-      height: 20px;
-      background: var(--danger);
-      color: #fff;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 12px;
-      font-weight: bold;
+      position: absolute; left: 0; top: 2px; width: 20px; height: 20px;
+      background: var(--danger); color: #fff; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 12px; font-weight: bold;
     }
 
     .links a {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 14px;
-      border-radius: 12px;
-      background: rgba(255,255,255,0.05);
-      text-decoration: none;
-      color: var(--text);
-      margin-bottom: 10px;
-      transition: background 0.2s;
+      display: flex; align-items: center; gap: 10px;
+      padding: 14px; border-radius: 12px;
+      background: rgba(255,255,255,0.05); text-decoration: none;
+      color: var(--text); margin-bottom: 10px; transition: background 0.2s;
     }
+    .links a:hover { background: rgba(255,255,255,0.1); }
 
-    .links a:hover {
-      background: rgba(255,255,255,0.1);
-    }
-
-    .footer {
-      text-align: center;
-      color: var(--muted);
-      font-size: 12px;
-      margin-top: 20px;
-    }
+    .footer { text-align: center; color: var(--muted); font-size: 12px; margin-top: 20px; }
   </style>
 </head>
 <body>
@@ -155,12 +110,17 @@
 
   <div class="header">
     <h1>🔥 Horny Chat</h1>
-    <span>Время считается от МСК (UTC+3)</span>
+    <span>Время МСК (UTC+3)</span>
   </div>
 
   <div class="card">
     <h2>👥 Участники</h2>
     <div id="users"></div>
+  </div>
+
+  <div class="card">
+    <h2>🎂 Дни рождения</h2>
+    <div id="birthdays"></div>
   </div>
 
   <div class="card">
@@ -185,7 +145,7 @@
   </div>
 
   <div class="footer">
-    © Horny Chat • Открывается внутри Telegram
+    © Horny Chat • 2026
   </div>
 
 </div>
@@ -197,10 +157,8 @@
     { name: "Берсерк", offset: 0 },
     { name: "Карина", offset: 0 },
     { name: "Деус", offset: 0 },
-
     { name: "Жок", offset: -2 },
     { name: "Колбаска", offset: 1 },
-
     { name: "Артём", offset: 2, birthday: "2002-02-26" },
     { name: "Мика", offset: 2, birthday: "2004-03-27" }
   ];
@@ -211,8 +169,18 @@
     return new Date(utc + 3 * 3600000);
   }
 
+  // Функция для правильного склонения
+  function declension(age) {
+    let lastDigit = age % 10;
+    let lastTwoDigits = age % 100;
+    if (lastTwoDigits >= 11 && lastTwoDigits <= 14) return "лет";
+    if (lastDigit === 1) return "год";
+    if (lastDigit >= 2 && lastDigit <= 4) return "года";
+    return "лет";
+  }
+
   function getAge(birthday) {
-    const today = new Date();
+    const today = getMSKTime();
     const birth = new Date(birthday);
     let age = today.getFullYear() - birth.getFullYear();
     if (
@@ -221,58 +189,70 @@
     ) {
       age--;
     }
-    return age;
+    return `${age} ${declension(age)}`;
   }
 
-  function getNextBirthday(birthday) {
-    const today = new Date();
+  function getDaysToBday(birthday) {
+    const today = getMSKTime();
+    today.setHours(0,0,0,0);
     const birth = new Date(birthday);
     const next = new Date(today.getFullYear(), birth.getMonth(), birth.getDate());
+    
     if (next < today) next.setFullYear(today.getFullYear() + 1);
-    return next.toLocaleDateString("ru-RU", { day: "2-digit", month: "long" });
+    
+    const diff = next - today;
+    const days = Math.ceil(diff / (1000 * 60 * 60 * 24));
+    
+    if (days === 0) return "Сегодня! 🎉";
+    return `Осталось дней: ${days}`;
   }
 
-  function renderUsers() {
-    const container = document.getElementById("users");
-    container.innerHTML = "";
+  function renderData() {
+    const userContainer = document.getElementById("users");
+    const bdayContainer = document.getElementById("birthdays");
+    userContainer.innerHTML = "";
+    bdayContainer.innerHTML = "";
 
     const msk = getMSKTime();
 
     users.forEach(user => {
+      // Рендер пользователей и времени
       const local = new Date(msk.getTime() + user.offset * 3600000);
-      const time = local.toLocaleTimeString("ru-RU", {
-        hour: "2-digit",
-        minute: "2-digit"
-      });
+      const timeStr = local.toLocaleTimeString("ru-RU", { hour: "2-digit", minute: "2-digit" });
 
       const row = document.createElement("div");
       row.className = "time-row";
-
       row.innerHTML = `
         <div class="time-name">${user.name}</div>
         <div class="time-shift">МСК ${user.offset >= 0 ? "+" : ""}${user.offset}</div>
-        <div class="time-value">${time}</div>
+        <div class="time-value">${timeStr}</div>
       `;
+      userContainer.appendChild(row);
 
+      // Рендер дней рождения (если есть)
       if (user.birthday) {
-        const b = document.createElement("div");
-        b.className = "birthday";
-        b.textContent =
-          "🎂 " +
-          new Date(user.birthday).toLocaleDateString("ru-RU") +
-          " • " +
-          getAge(user.birthday) +
-          " лет • следующий ДР: " +
-          getNextBirthday(user.birthday);
-        row.appendChild(b);
-      }
+        const bdayItem = document.createElement("div");
+        bdayItem.className = "bday-item";
+        
+        const birthDateFormatted = new Date(user.birthday).toLocaleDateString("ru-RU", {
+          day: "numeric",
+          month: "long"
+        });
 
-      container.appendChild(row);
+        bdayItem.innerHTML = `
+          <div class="bday-info">
+            <strong>${user.name}</strong> (${getAge(user.birthday)})
+            <span class="bday-date">День рождения: ${birthDateFormatted}</span>
+          </div>
+          <div class="bday-countdown">${getDaysToBday(user.birthday)}</div>
+        `;
+        bdayContainer.appendChild(bdayItem);
+      }
     });
   }
 
-  renderUsers();
-  setInterval(renderUsers, 60000);
+  renderData();
+  setInterval(renderData, 60000);
 </script>
 
 </body>
